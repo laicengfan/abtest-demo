@@ -74,18 +74,30 @@ let addStyles = function(){
         height: 30px;
         line-height: 30px;
     }
-
+    .ab-modal-btn{
+      display:flex;
+    }
     .ab-modal-confirm {
         width: 118px;
         height: 48px;
         line-height: 48px;
         background: #4285f4;
-        border: 1px solid #4285f4;
         color: #fff;
         text-align: center;
         cursor: pointer;
-        margin: 20px auto;
-    }`;
+        margin: 20px 10px;
+    }
+    .ab-modal-remove {
+      width: 118px;
+      height: 48px;
+      line-height: 48px;
+      background: #e9ebf3;
+      color: #737c8b;
+      text-align: center;
+      cursor: pointer;
+      margin: 20px 10px;
+  }
+    `;
     document.head.appendChild(styleEl);  
     return;
 
@@ -114,13 +126,13 @@ let addPopDiv = function(){
         <span>编辑HTML</span>
         <input type="text">
       </div>
-      <div class="ab-modal-item remove">
-        <span>删除元素</span>
-      </div>
       <div class="ab-modal-item add">
         <span>添加元素</span>
       </div>
-      <div class="ab-modal-confirm">确认</div>
+      <div class="ab-modal-btn">
+        <div class="ab-modal-confirm">确认</div>
+        <div class="ab-modal-remove">删除元素</div>
+      </div>
     </div>
   `;
 
@@ -145,7 +157,7 @@ let mainInit = function () {
         let $formBackground = $form.children('.background').children('input')
         let $formEditText = $form.children('.editText').children('input')
         let $formEditHtml = $form.children('.editHtml').children('input')
-        let $formRemove = $form.children('.remove').children()
+        let $formRemove = $form.children('.ab-modal-remove')
         let $formAdd = $form.children('.add').children('input')
         
         let mainDataArray = new Array();
@@ -167,22 +179,26 @@ let mainInit = function () {
         });
 
         $('.ab').click(function (e) {
+
+          if (lastClick) $(lastClick).attr('is-click',false);$(lastClick).removeClass('is-click');
+          lastClick = e.target;
+          $(e.target).attr('is-click',true);
+          $(e.target).addClass('is-click');
+          
+          domClick = lastClick;
+
+          $('#ab-model').show();
+
           // 初始化
           (function(){
             $formFontSize.val('')
             $formFontColor.val('')
             $formBackground.val('')
-            $formEditText.val('')
-            $formEditHtml.val('')
+            // 填入text信息
+            $formEditText.val($(domClick).text())
+            // 填入html信息
+            $formEditHtml.val($(domClick).html())
           }())
-
-
-          if (lastClick) $(lastClick).attr('is-click',false);
-          lastClick = e.target;
-          $(e.target).attr('is-click',true);
-          domClick = lastClick;
-
-          $('#ab-model').show();
   
           // 设置样式
           console.log($formFontSize)
@@ -202,7 +218,8 @@ let mainInit = function () {
             console.log($(this).val())
           })
           $formRemove.bind('click', function () {
-            $(domClick).addClass('will-remove')
+            $(domClick).remove()
+            // $(domClick).addClass('will-remove')
           })
   
           // debugger;
@@ -226,9 +243,9 @@ let mainInit = function () {
             if($formEditHtml.val()){
               $(domClick).html($formEditHtml.val())
             }
-            if($(domClick).hasClass('will-remove')){
-              $(domClick).remove()
-            }
+            // if($(domClick).hasClass('will-remove')){
+            //   $(domClick).remove()
+            // }
             let xpath = getXPath(domClick);
             console.log('xpath' + xpath);
 
