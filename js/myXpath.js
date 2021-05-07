@@ -68,11 +68,16 @@ let addStyles = function(){
         bottom: 50px;
         right: 0;
         z-index: 9;
+        background:#fff;
     }
 
     .ab-modal-item {
-        height: 30px;
-        line-height: 30px;
+        width:100%;
+        display:flex;
+        margin-bottom: 20px;
+    }
+    .ab-modal-item span{
+      margin-right:10px;
     }
     .ab-modal-btn{
       display:flex;
@@ -120,11 +125,11 @@ let addPopDiv = function(){
       </div>
       <div class="ab-modal-item editText">
         <span>编辑内容</span>
-        <input type="text">
+        <textarea type="text" rows="5" cols="30"></textarea>
       </div>
       <div class="ab-modal-item editHtml">
         <span>编辑HTML</span>
-        <input type="text">
+        <textarea type="text" rows="5" cols="30"></textarea>
       </div>
       <div class="ab-modal-item add">
         <span>添加元素</span>
@@ -155,8 +160,8 @@ let mainInit = function () {
         let $formFontSize = $form.children('.fontSize').children('input')
         let $formFontColor = $form.children('.fontColor').children('input')
         let $formBackground = $form.children('.background').children('input')
-        let $formEditText = $form.children('.editText').children('input')
-        let $formEditHtml = $form.children('.editHtml').children('input')
+        let $formEditText = $form.children('.editText').children('textarea')
+        let $formEditHtml = $form.children('.editHtml').children('textarea')
         let $formRemove = $form.children('.ab-modal-remove')
         let $formAdd = $form.children('.add').children('input')
         
@@ -197,11 +202,11 @@ let mainInit = function () {
             // 填入text信息
             $formEditText.val($(domClick).text())
             // 填入html信息
-            $formEditHtml.val($(domClick).html())
+            $formEditHtml.val(domClick.outerHTML)
           }())
   
           // 设置样式
-          console.log($formFontSize)
+          console.log(domClick)
           $formFontSize.bind('keyup', function () {
             console.log($(this).val())
           })
@@ -228,7 +233,6 @@ let mainInit = function () {
 
         });
 
-
         $(".ab-modal-confirm").bind('click', function () {
             // 改变DOM样式
             $(domClick).css({
@@ -240,9 +244,28 @@ let mainInit = function () {
             if($formEditText.val()){
               $(domClick).text($formEditText.val())
             }
+            console.log("before:",domClick)
             if($formEditHtml.val()){
-              $(domClick).html($formEditHtml.val())
+              // doNotTrack.html($formEditHtml.val())
+              //domClick.outerHTML = $formEditHtml.val()
+
+
+              let newDiv = document.createElement('div');
+              newDiv.innerHTML = $formEditHtml.val();
+              // newDiv.id = 'abc';
+              $(newDiv).children().attr('id','abc')
+              $(domClick).after($(newDiv).children());
+              $(domClick).remove()
+              // domClick = document.createElement($formEditHtml.val())
+              // domClick = document.createElement("p")
+              //domClick.setAttribute("id","abc")
+              //$(domClick)[0].id='abc';
+              domClick = document.getElementById('abc')
+              //domClick = $($formEditHtml.val())[0]
+              console.log(domClick);
             }
+            console.log("after:",domClick)
+
             // if($(domClick).hasClass('will-remove')){
             //   $(domClick).remove()
             // }
