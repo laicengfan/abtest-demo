@@ -91,25 +91,36 @@ let mainInitN = function () {
 
   let render = function (mainData) {
     let xele = findElementByXpath(mainData.xpath);
-    //debugger;
-    for (const key in mainData.style) {
-      if (mainData.style.hasOwnProperty(key)) {
-        const value = mainData.style[key];
-        $(xele)[0].style[key] = value;
-      }
+    switch(mainData.type)
+    {
+      case 'style':
+        for (const key in mainData.style) {
+          if (mainData.style.hasOwnProperty(key)) {
+            const value = mainData.style[key];
+            $(xele)[0].style[key] = value;
+          }
+        }
+        break;
+      case 'text':// 替换文本内容
+        $(xele).text(mainData.text);
+        break;
+      case 'html':
+        $(xele).replaceWith(mainData.html);
+        break;
+      case 'insert': // 插入增加的html
+        if(mainData.add.insertDirection === 'before'){
+          $(xele).before(mainData.add.html)
+        }else{
+          $(xele).after(mainData.add.html)
+        }
+        break;
+      case 'remove':// 删除元素
+        if(mainData.removeFlag){
+          $(xele).css('display','none')
+        }
+        break;
     }
-    // 替换文本内容
-    $(xele).text(mainData.text)
-    // 插入增加的html
-    if(mainData.add.insertDirection === 'before'){
-      $(xele).before(mainData.add.html)
-    }else{
-      $(xele).after(mainData.add.html)
-    }
-    // 删除元素
-    if(mainData.removeFlag){
-      $(xele).css('display','none')
-    }
+    
   }
 
   for (let index = 0; index < mainDataArray.length; index++) {

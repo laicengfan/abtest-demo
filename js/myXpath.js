@@ -65,7 +65,7 @@ let addStyles = function () {
         padding: 20px;
         box-shadow: 0 6px 10px 0 rgb(115 124 139 / 15%);
         position: fixed;
-        bottom: 10px;
+        top: 10px;
         right: 0;
         z-index: 9;
         background:#fff;
@@ -74,7 +74,7 @@ let addStyles = function () {
     .ab-modal-item {
         width:300px;
         display:flex;
-        margin-bottom: 20px;
+        margin-bottom: 5px;
         flex-wrap:wrap;
     }
     .ab-modal-item span{
@@ -85,33 +85,41 @@ let addStyles = function () {
     }
     .ab-modal-confirm {
         width: 118px;
-        height: 48px;
-        line-height: 48px;
+        height: 38px;
+        line-height: 38px;
         background: #4285f4;
         color: #fff;
         text-align: center;
         cursor: pointer;
-        margin: 20px 10px;
+        margin: 10px 10px;
     }
     .ab-modal-remove {
       width: 118px;
-      height: 48px;
-      line-height: 48px;
+      height: 38px;
+      line-height: 38px;
       background: #e9ebf3;
       color: #737c8b;
       text-align: center;
       cursor: pointer;
-      margin: 20px 10px;
+      margin: 10px 10px;
   }
   .ab-modal-insert{
       width: 118px;
-      height: 48px;
-      line-height: 48px;
+      height: 38px;
+      line-height: 38px;
       background: #4285f4;
       color: #fff;
       text-align: center;
       cursor: pointer;
-      margin: 20px 10px;
+      margin: 10px 10px;
+  }
+  .ab-ip-xpath{
+    width: 300px;
+    margin-bottom: 10px;
+  }
+  .ab-edit-type{
+    margin-bottom:10px;
+    width:300px;
   }
     `;
   document.head.appendChild(styleEl);
@@ -122,35 +130,52 @@ let addStyles = function () {
 let addPopDiv = function () {
   let popDiv = `
     <div class="ab-modal">
-      <div class="ab-modal-item fontSize">
+      <input class="ab-ip-xpath" id="ab-ip-xpath"/>
+      <div class="ab-model-item ab-edit-type">
+        <select id="am-select" value="style">
+          <span>类型</span>
+          <option value="style">style</option>
+          <option value="text">edit text</option>
+          <option value="html">edit html</option>
+          <option value="insert">insert html</option>
+          <option value="remove">remove</option>
+          <option value="runjs">run javascript</option>
+        </select>
+      </div>
+      <div class="ab-modal-item fontSize" type="style">
         <span>字体大小</span>
         <input type="text">
       </div>
-      <div class="ab-modal-item fontColor">
+      <div class="ab-modal-item fontColor" type="style">
         <span>字体颜色</span>
         <input type="text">
       </div>
-      <div class="ab-modal-item background">
+      <div class="ab-modal-item background" type="style">
         <span>背景颜色</span>
         <input type="text">
       </div>
-      <div class="ab-modal-item editText">
+      <div class="ab-modal-item editText" type="text">
         <span>编辑内容</span>
         <textarea type="text" rows="5" cols="30"></textarea>
       </div>
-      <div class="ab-modal-item editHtml">
+      <div class="ab-modal-item editHtml" type="html">
         <span>编辑HTML</span>
         <textarea type="text" rows="5" cols="30"></textarea>
       </div>
-      <div class="ab-modal-item add">
+      <div class="ab-modal-item add" type="insert">
         <span>添加元素</span>
-        <textarea type="text" rows="5" cols="30"></textarea>
-        <div class="ab-modal-insert before">Before</div>
-        <div class="ab-modal-insert after">After</div>
+        <textarea id="am-tt-add" type="text" rows="5" cols="30"></textarea>
+        <select id="am-select-direct" value="before">
+          <span>方向</span>
+          <option value="before">before</option>
+          <option value="after">after</option>
+        </select>
+      </div>
+      <div class="ab-modal-item remove" type="remove">
+        <div class="ab-modal-remove">删除元素</div>
       </div>
       <div class="ab-modal-btn">
         <div class="ab-modal-confirm">确认</div>
-        <div class="ab-modal-remove">删除元素</div>
       </div>
     </div>
   `;
@@ -194,6 +219,18 @@ let mainInit = function () {
   //     'backgroundColor': 'red'
   //   }
   // };
+  let currentType = 'style';
+  let currentXpath = '';
+
+  $('.ab-modal-item').hide();
+  $('.ab-modal-item[type="'+currentType+'"]').show();
+
+  $('#am-select').change(function(){
+    currentType = $(this).children('option:selected').val()
+    $('.ab-modal-item').hide();
+    $('.ab-modal-item[type="'+currentType+'"]').show();
+  });
+  
 
   $('.ab').mousemove(function (e) {
 
@@ -212,6 +249,10 @@ let mainInit = function () {
 
     $('#ab-model').show();
 
+    let xpath = getXPath(domClick);
+    currentXpath = xpath;
+    $('#ab-ip-xpath').val(xpath);
+
     // 初始化
     (function () {
       $formFontSize.val('')
@@ -220,7 +261,7 @@ let mainInit = function () {
       // 填入text信息
       $formEditText.val($(domClick).text())
       // 填入html信息
-      // $formEditHtml.val(domClick.outerHTML)
+      $formEditHtml.val(domClick.outerHTML)
       $formAdd.val('')
     }())
 
@@ -272,17 +313,82 @@ let mainInit = function () {
 
   editPanel()
 
-  $(".ab-modal-confirm").bind('click', function () {
-    // 改变DOM样式
-    $(domClick).css({
-      'font-size': $formFontSize.val(),
-      'color': $formFontColor.val(),
-      'background-color': $formBackground.val()
-    })
-    // 改变DOM属性
-    if ($formEditText.val()) {
-      $(domClick).text($formEditText.val())
+  let findElementByXpath = function (xpath) {
+    let element;
+
+    element = $.xpath(xpath, window.document);
+
+    return element
+  };
+
+
+  let doABTestRender = function (mainData){
+    let domClick = findElementByXpath(mainData.xpath);
+    switch(mainData.type) 
+    {
+      case 'style':
+        // 改变DOM样式
+        $(domClick).css({
+          'font-size':mainData.style['font-size'],
+          'color': mainData.style['color'],
+          'background-color':mainData.style['background-color'] 
+        })
+        break;
+      case 'text':
+        $(domClick).text(mainData.text);
+        break;
+      case 'html':
+        $(domClick).replaceWith(mainData.html);
+        break;
+      case 'remove':
+        break;
+      case 'insert':
+        if(mainData.add.insertDirection == 'before')
+        {
+          $(domClick).before( mainData.add.html)
+        }
+        else
+        {
+          $(domClick).after( mainData.add.html)
+        }
+        break;
     }
+  };
+
+  $(".ab-modal-confirm").bind('click', function () {
+    let mainData = {
+      type : currentType,
+      xpath : currentXpath
+    }
+
+    switch(currentType){
+      case 'style':
+        mainData.style = {
+          'font-size': $formFontSize.val(),
+          'color': $formFontColor.val(),
+          'background-color': $formBackground.val()
+        };
+        break;
+      case 'text':// 改变DOM text
+        mainData.text = $formEditText.val();
+        break;
+      case 'html':
+        mainData.html = $formEditHtml.val();
+        break;
+      case 'remove':
+        mainData.removeFlag = removeFlag;
+        break;
+      case 'insert':
+        mainData.add = {
+          insertDirection: $('#am-select-direct').val(), // 插入方向
+          html: $('#am-tt-add').val()
+        };
+        break;
+    }
+
+    doABTestRender(mainData);
+    
+
     // console.log("before:", domClick)
     /* if ($formEditHtml.val()) {
       // doNotTrack.html($formEditHtml.val())
@@ -309,30 +415,31 @@ let mainInit = function () {
     // if($(domClick).hasClass('will-remove')){
     //   $(domClick).remove()
     // }
-    let xpath = getXPath(domClick);
-    console.log('xpath' + xpath);
 
-    let mainData = {
-      xpath: xpath,
-      style: {
-        'fontSize': $formFontSize.val(),
-        'color': $formFontColor.val(),
-        'backgroundColor': $formBackground.val()
-      },
-      // 标签内容
-      text: $formEditText.val(),
-      // 移除标志
-      removeFlag:removeFlag,
-      // 插入html
-      add: {
-        // 插入方向
-        insertDirection: insertDirection,
-        html: $formAdd.val()
-      },
-      // Todo判断是不是单个元素的重复修改
-      // againFlag: false
+    // let xpath = getXPath(domClick);
+    // console.log('xpath' + xpath);
 
-    };
+    // let mainData = {
+    //   xpath: xpath,
+    //   style: {
+    //     'fontSize': $formFontSize.val(),
+    //     'color': $formFontColor.val(),
+    //     'backgroundColor': $formBackground.val()
+    //   },
+    //   // 标签内容
+    //   text: $formEditText.val(),
+    //   // 移除标志
+    //   removeFlag:removeFlag,
+    //   // 插入html
+    //   add: {
+    //     // 插入方向
+    //     insertDirection: insertDirection,
+    //     html: $formAdd.val()
+    //   },
+    //   // Todo判断是不是单个元素的重复修改
+    //   // againFlag: false
+
+    // };
     // mainData.attr = {
     //   'text': $formEditText.val(),
     //   'html': $formEditHtml.val(),
