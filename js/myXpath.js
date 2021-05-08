@@ -58,14 +58,14 @@ let addStyles = function () {
   styleEl.innerHTML = `[is-hover="true"] {
         background-color: rgba(0, 0, 0, 0.1);
     }
-    [is-hover="true"] {
-        background-color: rgba(0, 0, 0, 0.1);
+    [is-click="true"] {
+        background-color: yellow
     }
     .ab-modal {
         padding: 20px;
         box-shadow: 0 6px 10px 0 rgb(115 124 139 / 15%);
         position: fixed;
-        bottom: 50px;
+        bottom: 10px;
         right: 0;
         z-index: 9;
         background:#fff;
@@ -176,9 +176,14 @@ let mainInit = function () {
   let $formBackground = $form.children('.background').children('input')
   let $formEditText = $form.children('.editText').children('textarea')
   let $formEditHtml = $form.children('.editHtml').children('textarea')
-  let $formRemove = $form.children('.ab-modal-remove')
-  let $formAdd = $form.children('.add').children('input')
-
+  let $formRemove = $('.ab-modal-remove')
+  let $formAdd = $form.children('.add').children('textarea')
+  let $formAddBefore = $form.children('.add').children('.ab-modal-insert.before')
+  let $formAddAfter = $form.children('.add').children('.ab-modal-insert.after')
+  // 移除标志
+  let removeFlag = false
+  // 插入html方向
+  let insertDirection = ''
   let mainDataArray = new Array();
 
   // let mainData = {
@@ -198,12 +203,10 @@ let mainInit = function () {
   });
 
   $('.ab').click(function (e) {
-
+    removeFlag = false
     if (lastClick) $(lastClick).attr('is-click', false);
-    $(lastClick).removeClass('is-click');
     lastClick = e.target;
     $(e.target).attr('is-click', true);
-    $(e.target).addClass('is-click');
 
     domClick = lastClick;
 
@@ -217,36 +220,57 @@ let mainInit = function () {
       // 填入text信息
       $formEditText.val($(domClick).text())
       // 填入html信息
-      $formEditHtml.val(domClick.outerHTML)
+      // $formEditHtml.val(domClick.outerHTML)
+      $formAdd.val('')
     }())
-
-    // 设置样式
-    console.log(domClick)
-    $formFontSize.bind('keyup', function () {
-      console.log($(this).val())
-    })
-    $formFontColor.bind('keyup', function () {
-      console.log($(this).val())
-    })
-    $formBackground.bind('keyup', function () {
-      console.log($(this).val())
-    })
-    $formEditText.bind('keyup', function () {
-      console.log($(this).val())
-    })
-    $formEditHtml.bind('keyup', function () {
-      console.log($(this).val())
-    })
-    $formRemove.bind('click', function () {
-      $(domClick).remove()
-      // $(domClick).addClass('will-remove')
-    })
 
     // debugger;
 
     return false;
 
   });
+
+  // 编辑操作面板
+  const editPanel = () => {
+    // 设置样式
+    $formFontSize.bind('keyup', function () {
+      // console.log($(this).val())
+    })
+    $formFontColor.bind('keyup', function () {
+      // console.log($(this).val())
+    })
+    $formBackground.bind('keyup', function () {
+      // console.log($(this).val())
+    })
+    // 修改文本
+    $formEditText.bind('keyup', function () {
+      // console.log($(this).val())
+    })
+    // 修改html
+    $formEditHtml.bind('keyup', function () {
+      // console.log($(this).val())
+    })
+    // 移除元素
+    $formRemove.bind('click', function () {
+      $(domClick).css('display','none')
+      removeFlag = true
+      // $(domClick).addClass('will-remove')
+    })
+    // 往前插入
+    $formAddBefore.bind('click', function () {
+      let $insertElement = $($formAdd.val())[0]
+      $(domClick).before($insertElement)
+      insertDirection = 'before'
+    })
+    // 往后插入
+    $formAddAfter.bind('click', function () {
+      let $insertElement = $($formAdd.val())[0]
+      $(domClick).after($insertElement)
+      insertDirection = 'after'
+    })
+  }
+
+  editPanel()
 
   $(".ab-modal-confirm").bind('click', function () {
     // 改变DOM样式
@@ -259,8 +283,8 @@ let mainInit = function () {
     if ($formEditText.val()) {
       $(domClick).text($formEditText.val())
     }
-    console.log("before:", domClick)
-    if ($formEditHtml.val()) {
+    // console.log("before:", domClick)
+    /* if ($formEditHtml.val()) {
       // doNotTrack.html($formEditHtml.val())
       //domClick.outerHTML = $formEditHtml.val()
 
@@ -278,8 +302,9 @@ let mainInit = function () {
       domClick = document.getElementById('abc')
       //domClick = $($formEditHtml.val())[0]
       console.log(domClick);
-    }
-    console.log("after:", domClick)
+    } */
+
+    // console.log("after:", domClick)
 
     // if($(domClick).hasClass('will-remove')){
     //   $(domClick).remove()
@@ -288,23 +313,41 @@ let mainInit = function () {
     console.log('xpath' + xpath);
 
     let mainData = {
-      xpath: xpath
-    };
-    mainData.style = {
-      'fontSize': $formFontSize.val(),
-      'color': $formFontColor.val(),
-      'backgroundColor': $formBackground.val()
-    }
-    mainData.attr = {
-      'text': $formEditText.val(),
-      'html': $formEditHtml.val(),
-    }
+      xpath: xpath,
+      style: {
+        'fontSize': $formFontSize.val(),
+        'color': $formFontColor.val(),
+        'backgroundColor': $formBackground.val()
+      },
+      // 标签内容
+      text: $formEditText.val(),
+      // 移除标志
+      removeFlag:removeFlag,
+      // 插入html
+      add: {
+        // 插入方向
+        insertDirection: insertDirection,
+        html: $formAdd.val()
+      },
+      // Todo判断是不是单个元素的重复修改
+      // againFlag: false
 
-    console.log(mainData)
+    };
+    // mainData.attr = {
+    //   'text': $formEditText.val(),
+    //   'html': $formEditHtml.val(),
+    // }
 
     mainDataArray.push(mainData);
 
-    console.log(JSON.stringify(mainDataArray));
+    let userStorage = window.localStorage
+    if (!window.localStorage) {
+      alert('浏览器版本过低，保存功能不支持')
+    } else {
+      userStorage.setItem('mainDataArray', JSON.stringify(mainDataArray))
+    }
+    console.log(userStorage)
+    console.log(mainDataArray);
   })
 
 
