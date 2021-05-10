@@ -42,13 +42,13 @@ function loadJS(url, callback) {
 
 }
 
-loadJS('./lib/jquery.min.js', function () {
-  loadJS('./lib/wgxpath.install.js', function () {
-    loadJS('./lib/jquery-path-1.0.7.js', function () {
-      mainInitN();
-    })
-  });
-});
+// loadJS('./lib/jquery.min.js', function () {
+//   loadJS('./lib/wgxpath.install.js', function () {
+//     loadJS('./lib/jquery-path-1.0.7.js', function () {
+//       mainInitN();
+//     })
+//   });
+// });
 
 let mainInitN = function () {
 
@@ -132,4 +132,41 @@ let mainInitN = function () {
 
   //render(mainData0);
 
+}
+
+
+let PAOptionsApp = {
+  basePath : 'https://laicengfan.github.io/abtest-demo'
+}
+
+window.addEventListener("message", receiveMessageApp, false);
+
+function receiveMessageApp(event)
+{
+  if(event.data.method == 'render')
+  {
+    PAABTestApp.render();
+  }
+
+  // For Chrome, the origin property is in the event.originalEvent
+  // object.
+  // 这里不准确，chrome没有这个属性
+  // var origin = event.origin || event.originalEvent.origin;
+  var origin = event.origin
+  // if (origin !== PAOptionsApp.basePath)
+  //   return;
+
+  // ...
+}
+
+let PAABTestApp = {
+  render : () => {
+    loadJS(PAOptionsApp.basePath + '/lib/jquery.min.js', function () {
+      loadJS(PAOptionsApp.basePath + '/lib/wgxpath.install.js', function () {
+        loadJS(PAOptionsApp.basePath + '/lib/jquery-path-1.0.7.js', function () {
+          mainInitN();
+        })
+      });
+    });
+  }
 }

@@ -464,7 +464,7 @@ let mainInit = function () {
 
 
 let PAOptions = {
-  basePath : 'http://127.0.0.1:5500'
+  basePath : 'https://laicengfan.github.io/abtest-demo'
 }
 
 
@@ -488,8 +488,8 @@ function receiveMessage(event)
   // 这里不准确，chrome没有这个属性
   // var origin = event.origin || event.originalEvent.origin;
   var origin = event.origin
-  if (origin !== PAOptions.basePath)
-    return;
+  // if (origin !== PAOptions.basePath)
+  //   return;
 
   // ...
 }

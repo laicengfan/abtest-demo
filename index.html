@@ -40,6 +40,7 @@
   <span> | </span>
   <button id="btn-check-sdk"> 检测SDK </button>
   <button id="btn-start"> Start </button>
+  <button id="btn-active"> Active </button>
   <div class="ab">
     <iframe id="iframe" src="./test-path2.html">
     </iframe>
@@ -137,6 +138,11 @@
     document.getElementById('btn-start').addEventListener('click', function () {
       window.frames[0].postMessage({
         method:'start'
+      },subOrigin);
+    });
+    document.getElementById('btn-active').addEventListener('click', function () {
+      window.frames[0].postMessage({
+        method:'render'
       },subOrigin);
     });
 
