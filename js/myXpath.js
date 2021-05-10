@@ -63,7 +63,7 @@ function loadJS(url, callback) {
 let addStyles = function () {
   let head = document.getElementsByTagName('head')[0]
   let link = document.createElement('link')
-  link.href = './scss/index.css'
+  link.href = PAOptions.basePath + '/scss/index.css'
   link.rel = 'stylesheet'
   link.type = 'text/css'
   head.appendChild(link)
