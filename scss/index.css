@@ -9,10 +9,13 @@
 .ab-modal {
   padding: 20px;
   position: fixed;
-  top: 10px;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
   right: 0;
   z-index: 9;
   background: #fff;
+  border: 1px solid #f0f0f0;
 }
 
 .ab-modal-item {
@@ -23,6 +26,24 @@
   margin-bottom: 5px;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
+  /* input {
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      box-sizing: border-box;
+      color: rgba(0, 0, 0, .85);
+      display: inline-block;
+      font-size: 14px;
+      line-height: 1.5715;
+      list-style: none;
+      margin: 0;
+      min-width: 0;
+      padding: 4px 11px;
+      position: relative;
+      transition: all .3s;
+      width: 100%;
+    } */
 }
 
 .ab-modal-item span {

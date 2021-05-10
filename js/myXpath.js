@@ -75,8 +75,12 @@ let addStyles = function () {
 let addPopDiv = function () {
   let popDiv = `
     <div class="ab-modal">
-      <input class="ab-ip-xpath" id="ab-ip-xpath"/>
+      <div>
+        <span>xpath路径：</span>
+        <input class="ab-ip-xpath" id="ab-ip-xpath"/>
+      </div>
       <div class="ab-model-item ab-edit-type">
+        <span>操作类型：</span>
         <select id="am-select" value="style">
           <span>类型</span>
           <option value="style">style</option>
@@ -88,31 +92,31 @@ let addPopDiv = function () {
         </select>
       </div>
       <div class="ab-modal-item fontSize" type="style">
-        <span>字体大小</span>
+        <span>字体大小：</span>
         <input type="text">
       </div>
       <div class="ab-modal-item fontColor" type="style">
-        <span>字体颜色</span>
+        <span>字体颜色：</span>
         <input type="text">
       </div>
       <div class="ab-modal-item background" type="style">
-        <span>背景颜色</span>
+        <span>背景颜色：</span>
         <input type="text">
       </div>
       <div class="ab-modal-item editText" type="text">
-        <span>编辑内容</span>
+        <span>编辑内容：</span>
         <textarea type="text" rows="5" cols="30"></textarea>
       </div>
       <div class="ab-modal-item editHtml" type="html">
-        <span>编辑HTML</span>
+        <span>编辑HTML：</span>
         <textarea type="text" rows="5" cols="30"></textarea>
       </div>
       <div class="ab-modal-item runJs" type="runJs">
-        <span>编辑JS</span>
+        <span>编辑JS：</span>
         <textarea type="text" rows="5" cols="30"></textarea>
       </div>
       <div class="ab-modal-item add" type="insert">
-        <span>添加元素</span>
+        <span>添加元素：</span>
         <textarea id="am-tt-add" type="text" rows="5" cols="30"></textarea>
         <select id="am-select-direct" value="before">
           <span>方向</span>
