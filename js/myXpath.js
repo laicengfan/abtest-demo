@@ -50,15 +50,15 @@ function loadJS(url, callback) {
 
 }
 
-loadJS('./lib/jquery.min.js', function () {
-  loadJS('./lib/wgxpath.install.js', function () {
-    loadJS('./lib/jquery-path-1.0.7.js', function () {
-      addStyles();
-      mainInit();
-    })
-  });
-});
 
+// loadJS('./lib/jquery.min.js', function () {
+//   loadJS('./lib/wgxpath.install.js', function () {
+//     loadJS('./lib/jquery-path-1.0.7.js', function () {
+//       addStyles();
+//       mainInit();
+//     })
+//   });
+// });
 
 let addStyles = function () {
   let head = document.getElementsByTagName('head')[0]
@@ -141,6 +141,7 @@ let addPopDiv = function () {
 }
 
 let mainInit = function () {
+  alert('sdk初始化成功！');
   addPopDiv();
 
   let lastHover = undefined;
@@ -186,14 +187,22 @@ let mainInit = function () {
   });
 
 
-  $('.ab').mousemove(function (e) {
+  $(document.body).mousemove(function (e) {
 
+    if($(e.target).parents('.ab-modal').length > 0)
+    {
+      return;
+    }
     if (lastHover) $(lastHover).attr('is-hover', false);
     lastHover = e.target;
     $(e.target).attr('is-hover', true);
   });
 
-  $('.ab').click(function (e) {
+  $(document.body).click(function (e) {
+    if($(e.target).parents('.ab-modal').length > 0)
+    {
+      return;
+    }
     removeFlag = false
     if (lastClick) $(lastClick).attr('is-click', false);
     lastClick = e.target;
@@ -431,3 +440,50 @@ let mainInit = function () {
 
 
 };
+
+
+let PAOptions = {
+  basePath : 'http://127.0.0.1:5500'
+}
+
+
+window.addEventListener("message", receiveMessage, false);
+
+function receiveMessage(event)
+{
+  if(event.data.method == 'check-sdk')
+  {
+    window.parent.postMessage({
+      method:'check-sdk-ok'
+    },'*');
+  }
+  else if(event.data.method == 'start')
+  {
+    PAABTest.start();
+  }
+
+  // For Chrome, the origin property is in the event.originalEvent
+  // object.
+  // 这里不准确，chrome没有这个属性
+  // var origin = event.origin || event.originalEvent.origin;
+  var origin = event.origin
+  if (origin !== PAOptions.basePath)
+    return;
+
+  // ...
+}
+
+
+let PAABTest = {
+  start : () => {
+    loadJS(PAOptions.basePath + '/lib/jquery.min.js', function () {
+      loadJS(PAOptions.basePath + '/lib/wgxpath.install.js', function () {
+        loadJS(PAOptions.basePath + '/lib/jquery-path-1.0.7.js', function () {
+          addStyles();
+          mainInit();
+
+        })
+      });
+    });
+  }
+}
