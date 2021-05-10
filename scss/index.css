@@ -16,6 +16,34 @@
   z-index: 9;
   background: #fff;
   border: 1px solid #f0f0f0;
+  border-radius: 2px;
+}
+
+.ab-modal > div input {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.85);
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1.5715;
+  list-style: none;
+  margin: 0;
+  min-width: 0;
+  padding: 4px 11px;
+  position: relative;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  width: 200px;
+}
+
+.ab-modal > div input:focus {
+  border-color: #4285f4;
+  border-right-width: 1px !important;
+  outline: 0;
 }
 
 .ab-modal-item {
@@ -26,27 +54,38 @@
   margin-bottom: 5px;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
-  /* input {
-      background-color: #fff;
-      background-image: none;
-      border: 1px solid #d9d9d9;
-      border-radius: 2px;
-      box-sizing: border-box;
-      color: rgba(0, 0, 0, .85);
-      display: inline-block;
-      font-size: 14px;
-      line-height: 1.5715;
-      list-style: none;
-      margin: 0;
-      min-width: 0;
-      padding: 4px 11px;
-      position: relative;
-      transition: all .3s;
-      width: 100%;
-    } */
+}
+
+.ab-modal-item input {
+  width: 66.7%;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.85);
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1.5715;
+  list-style: none;
+  margin: 0;
+  min-width: 0;
+  padding: 4px 11px;
+  position: relative;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  width: 200px;
+}
+
+.ab-modal-item input:focus {
+  border-color: #4285f4;
+  border-right-width: 1px !important;
+  outline: 0;
 }
 
 .ab-modal-item span {
+  width: 33.3%;
   margin-right: 10px;
 }
 
@@ -81,11 +120,6 @@
   text-align: center;
   cursor: pointer;
   margin: 10px 10px;
-}
-
-.ab-modal .ab-ip-xpath {
-  width: 300px;
-  margin-bottom: 10px;
 }
 
 .ab-modal .ab-edit-type {

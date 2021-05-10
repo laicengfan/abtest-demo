@@ -39,75 +39,75 @@
   <div class="ab">
     <iframe id="iframe" src="./test-path2.html">
     </iframe>
-  </div>
+    
 
-  <script type="text/javascript">
-    function loadJS(doc, url, callback) {
+    <script type="text/javascript">
+      function loadJS(doc, url, callback) {
 
-      var script = doc.createElement('script'),
+        var script = doc.createElement('script'),
 
-        fn = callback || function () {};
+          fn = callback || function () {};
 
-      script.type = 'text/javascript';
+        script.type = 'text/javascript';
 
 
 
-      //IE
+        //IE
 
-      if (script.readyState) {
+        if (script.readyState) {
 
-        script.onreadystatechange = function () {
+          script.onreadystatechange = function () {
 
-          if (script.readyState == 'loaded' || script.readyState == 'complete') {
+            if (script.readyState == 'loaded' || script.readyState == 'complete') {
 
-            script.onreadystatechange = null;
+              script.onreadystatechange = null;
+
+              fn();
+
+            }
+
+          };
+
+        } else {
+
+          //其他浏览器
+
+          script.onload = function () {
 
             fn();
 
-          }
+          };
 
-        };
+        }
 
-      } else {
+        script.src = url;
 
-        //其他浏览器
-
-        script.onload = function () {
-
-          fn();
-
-        };
+        doc.getElementsByTagName('head')[0].appendChild(script);
 
       }
 
-      script.src = url;
+      // loadJS(document,'./js/myXpath.js',function(){
+      //         console.log('finish 1');
+      //     });
 
-      doc.getElementsByTagName('head')[0].appendChild(script);
-
-    }
-
-    // loadJS(document,'./js/myXpath.js',function(){
-    //         console.log('finish 1');
-    //     });
-
-    document.getElementById('addSelect').addEventListener('click', function () {
-      var obj = document.getElementById("iframe").contentWindow.document;
-      loadJS(obj, './js/myXpath.js', function () {
-        console.log('finish 1');
+      document.getElementById('addSelect').addEventListener('click', function () {
+        var obj = document.getElementById("iframe").contentWindow.document;
+        loadJS(obj, './js/myXpath.js', function () {
+          console.log('finish 1');
+        });
       });
-    });
 
-    document.getElementById('addStyles').addEventListener('click', function () {
-      var obj = document.getElementById("iframe").contentWindow.document;
-      loadJS(obj, './js/myNewVersion.js', function () {
-        console.log('finish 2');
+      document.getElementById('addStyles').addEventListener('click', function () {
+        var obj = document.getElementById("iframe").contentWindow.document;
+        loadJS(obj, './js/myNewVersion.js', function () {
+          console.log('finish 2');
+        });
       });
-    });
 
-    document.getElementById('btn-go').addEventListener('click', function () {
-      document.getElementById("iframe").src = document.getElementById('ip-url').value;
-    });
-  </script>
+      document.getElementById('btn-go').addEventListener('click', function () {
+        document.getElementById("iframe").src = document.getElementById('ip-url').value;
+      });
+    </script>
 
 </body>
 

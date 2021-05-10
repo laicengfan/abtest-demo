@@ -67,65 +67,85 @@ let addStyles = function () {
   link.rel = 'stylesheet'
   link.type = 'text/css'
   head.appendChild(link)
-  
+
   return;
 
 }
 
 let addPopDiv = function () {
   let popDiv = `
-    <div class="ab-modal">
+  <div class="ab-modal">
       <div>
-        <span>xpath路径：</span>
-        <input class="ab-ip-xpath" id="ab-ip-xpath"/>
+        <div class="ab-model-item-wrap">
+          <span>xpath路径：</span>
+          <input class="ab-ip-xpath" id="ab-ip-xpath" />
+        </div>
       </div>
       <div class="ab-model-item ab-edit-type">
-        <span>操作类型：</span>
-        <select id="am-select" value="style">
-          <span>类型</span>
-          <option value="style">style</option>
-          <option value="text">edit text</option>
-          <option value="html">edit html</option>
-          <option value="insert">insert html</option>
-          <option value="remove">remove</option>
-          <option value="runJs">run javascript</option>
-        </select>
+        <div class="ab-model-item-wrap">
+          <span>操作类型：</span>
+          <select id="am-select" value="style">
+            <span>类型</span>
+            <option value="style">style</option>
+            <option value="text">edit text</option>
+            <option value="html">edit html</option>
+            <option value="insert">insert html</option>
+            <option value="remove">remove</option>
+            <option value="runJs">run javascript</option>
+          </select>
+        </div>
       </div>
       <div class="ab-modal-item fontSize" type="style">
-        <span>字体大小：</span>
-        <input type="text">
+        <div class="ab-model-item-wrap">
+          <span>字体大小：</span>
+          <input type="text">
+        </div>
       </div>
       <div class="ab-modal-item fontColor" type="style">
-        <span>字体颜色：</span>
-        <input type="text">
+        <div class="ab-model-item-wrap">
+          <span>字体颜色：</span>
+          <input type="text">
+        </div>
       </div>
       <div class="ab-modal-item background" type="style">
-        <span>背景颜色：</span>
-        <input type="text">
+        <div class="ab-model-item-wrap">
+          <span>背景颜色：</span>
+          <input type="text">
+        </div>
       </div>
       <div class="ab-modal-item editText" type="text">
-        <span>编辑内容：</span>
-        <textarea type="text" rows="5" cols="30"></textarea>
+        <div class="ab-model-item-wrap">
+          <span>编辑内容：</span>
+          <textarea type="text" rows="5" cols="30"></textarea>
+        </div>
       </div>
       <div class="ab-modal-item editHtml" type="html">
-        <span>编辑HTML：</span>
-        <textarea type="text" rows="5" cols="30"></textarea>
+        <div class="ab-model-item-wrap">
+          <span>编辑HTML：</span>
+          <textarea type="text" rows="5" cols="30"></textarea>
+        </div>
       </div>
       <div class="ab-modal-item runJs" type="runJs">
-        <span>编辑JS：</span>
-        <textarea type="text" rows="5" cols="30"></textarea>
-      </div>
-      <div class="ab-modal-item add" type="insert">
-        <span>添加元素：</span>
-        <textarea id="am-tt-add" type="text" rows="5" cols="30"></textarea>
-        <select id="am-select-direct" value="before">
-          <span>方向</span>
-          <option value="before">before</option>
-          <option value="after">after</option>
-        </select>
+        <div class="ab-model-item-wrap">
+          <span>编辑JS：</span>
+          <textarea type="text" rows="5" cols="30"></textarea>
+        </div>
+        <div class="ab-modal-item add" type="insert">
+          <div class="ab-model-item-wrap">
+            <span>添加元素：</span>
+            <textarea id="am-tt-add" type="text" rows="5" cols="30"></textarea>
+            <select id="am-select-direct" value="before">
+              <span>方向</span>
+              <option value="before">before</option>
+              <option value="after">after</option>
+            </select>
+          </div>
+        </div>
       </div>
       <div class="ab-modal-item remove" type="remove">
-        <div class="ab-modal-remove">删除元素</div>
+        <div class="ab-model-item-wrap">
+          <div class="ab-modal-remove">删除元素</div>
+        </div>
       </div>
       <div class="ab-modal-btn">
         <div class="ab-modal-confirm">确认</div>
@@ -149,16 +169,16 @@ let mainInit = function () {
   let domClick = undefined;
   // 表单
   let $form = $('.ab-modal')
-  let $formFontSize = $form.children('.fontSize').children('input')
-  let $formFontColor = $form.children('.fontColor').children('input')
-  let $formBackground = $form.children('.background').children('input')
-  let $formEditText = $form.children('.editText').children('textarea')
-  let $formEditHtml = $form.children('.editHtml').children('textarea')
-  let $formRunJs = $form.children('.runJs').children('textarea')
+  let $formFontSize = $form.children('.fontSize').find('input')
+  let $formFontColor = $form.children('.fontColor').find('input')
+  let $formBackground = $form.children('.background').find('input')
+  let $formEditText = $form.children('.editText').find('textarea')
+  let $formEditHtml = $form.children('.editHtml').find('textarea')
+  let $formRunJs = $form.children('.runJs').find('textarea')
   let $formRemove = $('.ab-modal-remove')
-  let $formAdd = $form.children('.add').children('textarea')
-  let $formAddBefore = $form.children('.add').children('.ab-modal-insert.before')
-  let $formAddAfter = $form.children('.add').children('.ab-modal-insert.after')
+  let $formAdd = $form.children('.add').find('textarea')
+  let $formAddBefore = $form.children('.add').find('.ab-modal-insert.before')
+  let $formAddAfter = $form.children('.add').find('.ab-modal-insert.after')
   // 移除标志
   let removeFlag = false
   // 插入html方向
@@ -231,6 +251,7 @@ let mainInit = function () {
     }
 
     setInit(initialInfo)
+    console.log(initialInfo)
     return false;
 
   });
