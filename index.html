@@ -32,10 +32,14 @@
 </head>
 
 <body>
+  
   <button id="addSelect">开始添加ABTest</button>
   <button id="addStyles">应用ABTest</button>
   <input value="/test/test-path2.html" id="ip-url" />
   <button id="btn-go"> go </button>
+  <span> | </span>
+  <button id="btn-check-sdk"> 检测SDK </button>
+  <button id="btn-start"> Start </button>
   <div class="ab">
     <iframe id="iframe" src="./test-path2.html">
     </iframe>
@@ -104,10 +108,60 @@
         });
       });
 
-      document.getElementById('btn-go').addEventListener('click', function () {
-        document.getElementById("iframe").src = document.getElementById('ip-url').value;
-      });
-    </script>
+    document.getElementById('btn-go').addEventListener('click', function () {
+      document.getElementById("iframe").src = document.getElementById('ip-url').value;
+    });
+
+    function domainURI(str){  
+      var durl=/http:\/\/([^\/]+)\//i;  
+      domain = str.match(durl);  
+      return domain[1];  
+    }  
+  
+    let checkSdk = false;
+    let subOrigin = '*';
+
+    document.getElementById('btn-check-sdk').addEventListener('click', function () {
+      checkSdk = false;
+      window.frames[0].postMessage({
+        method:'check-sdk'
+      },subOrigin);
+      setTimeout(() => {
+        if(!checkSdk)
+        {
+          alert('未安装sdk！');
+        }
+      }, 2000);
+    });
+
+    document.getElementById('btn-start').addEventListener('click', function () {
+      window.frames[0].postMessage({
+        method:'start'
+      },subOrigin);
+    });
+
+    window.addEventListener("message", receiveMessage, false);
+
+    function receiveMessage(event)
+    {
+      if(event.data.method == 'check-sdk-ok')
+      {
+        checkSdk = true;
+        alert('sdk安装成功');
+      }
+      // For Chrome, the origin property is in the event.originalEvent
+      // object.
+      // 这里不准确，chrome没有这个属性
+      // var origin = event.origin || event.originalEvent.origin;
+      var origin = event.origin
+      if (origin !== "http://example.org:8080")
+        return;
+
+      // ...
+    }
+
+  </script>
+
 
 </body>
 
