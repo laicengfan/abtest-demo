@@ -1,0 +1,73 @@
+$baseCls:ab-modal;
+
+[is-hover="true"] {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+[is-click="true"] {
+  background-color: yellow
+}
+
+.#{$baseCls} {
+  padding: 20px;
+  position: fixed;
+  top: 10px;
+  right: 0;
+  z-index: 9;
+  background: #fff;
+
+  &-item {
+    width: 300px;
+    display: flex;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+
+    span {
+      margin-right: 10px;
+    }
+  }
+
+  &-confirm {
+    width: 118px;
+    height: 38px;
+    line-height: 38px;
+    background: #4285f4;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px 10px;
+  }
+
+  &-remove {
+    width: 118px;
+    height: 38px;
+    line-height: 38px;
+    background: #e9ebf3;
+    color: #737c8b;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px 10px;
+  }
+
+  &-insert {
+    width: 118px;
+    height: 38px;
+    line-height: 38px;
+    background: #4285f4;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px 10px;
+  }
+
+  .ab-ip-xpath {
+    width: 300px;
+    margin-bottom: 10px;
+  }
+
+  .ab-edit-type {
+    margin-bottom: 10px;
+    width: 300px;
+  }
+
+}

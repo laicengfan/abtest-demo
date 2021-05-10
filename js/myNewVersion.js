@@ -118,6 +118,8 @@ let mainInitN = function () {
         if(mainData.removeFlag){
           $(xele).css('display','none')
         }
+      case 'runJs':
+        eval(mainData.js)
         break;
     }
     

@@ -1,5 +1,13 @@
 function loadJS(url, callback) {
 
+  /* TODO
+  1.runjs
+  2.dom元素的样式属性
+  3.demo样式优化
+  4.操作历史记录先展示
+  5.历史记录的编辑与删除
+  6.跨域页面的引入修改 */
+
   var script = document.createElement('script'),
 
     fn = callback || function () {};
@@ -51,78 +59,15 @@ loadJS('./lib/jquery.min.js', function () {
   });
 });
 
-let addStyles = function () {
-  // 或者插入新样式时操作
-  var styleEl = document.createElement('style');
-  //styleSheet = styleEl.style;
-  styleEl.innerHTML = `[is-hover="true"] {
-        background-color: rgba(0, 0, 0, 0.1);
-    }
-    [is-click="true"] {
-        background-color: yellow
-    }
-    .ab-modal {
-        padding: 20px;
-        box-shadow: 0 6px 10px 0 rgb(115 124 139 / 15%);
-        position: fixed;
-        top: 10px;
-        right: 0;
-        z-index: 9;
-        background:#fff;
-    }
 
-    .ab-modal-item {
-        width:300px;
-        display:flex;
-        margin-bottom: 5px;
-        flex-wrap:wrap;
-    }
-    .ab-modal-item span{
-      margin-right:10px;
-    }
-    .ab-modal-btn{
-      display:flex;
-    }
-    .ab-modal-confirm {
-        width: 118px;
-        height: 38px;
-        line-height: 38px;
-        background: #4285f4;
-        color: #fff;
-        text-align: center;
-        cursor: pointer;
-        margin: 10px 10px;
-    }
-    .ab-modal-remove {
-      width: 118px;
-      height: 38px;
-      line-height: 38px;
-      background: #e9ebf3;
-      color: #737c8b;
-      text-align: center;
-      cursor: pointer;
-      margin: 10px 10px;
-  }
-  .ab-modal-insert{
-      width: 118px;
-      height: 38px;
-      line-height: 38px;
-      background: #4285f4;
-      color: #fff;
-      text-align: center;
-      cursor: pointer;
-      margin: 10px 10px;
-  }
-  .ab-ip-xpath{
-    width: 300px;
-    margin-bottom: 10px;
-  }
-  .ab-edit-type{
-    margin-bottom:10px;
-    width:300px;
-  }
-    `;
-  document.head.appendChild(styleEl);
+let addStyles = function () {
+  let head = document.getElementsByTagName('head')[0]
+  let link = document.createElement('link')
+  link.href = './scss/index.css'
+  link.rel = 'stylesheet'
+  link.type = 'text/css'
+  head.appendChild(link)
+  
   return;
 
 }
@@ -139,7 +84,7 @@ let addPopDiv = function () {
           <option value="html">edit html</option>
           <option value="insert">insert html</option>
           <option value="remove">remove</option>
-          <option value="runjs">run javascript</option>
+          <option value="runJs">run javascript</option>
         </select>
       </div>
       <div class="ab-modal-item fontSize" type="style">
@@ -160,6 +105,10 @@ let addPopDiv = function () {
       </div>
       <div class="ab-modal-item editHtml" type="html">
         <span>编辑HTML</span>
+        <textarea type="text" rows="5" cols="30"></textarea>
+      </div>
+      <div class="ab-modal-item runJs" type="runJs">
+        <span>编辑JS</span>
         <textarea type="text" rows="5" cols="30"></textarea>
       </div>
       <div class="ab-modal-item add" type="insert">
@@ -201,6 +150,7 @@ let mainInit = function () {
   let $formBackground = $form.children('.background').children('input')
   let $formEditText = $form.children('.editText').children('textarea')
   let $formEditHtml = $form.children('.editHtml').children('textarea')
+  let $formRunJs = $form.children('.runJs').children('textarea')
   let $formRemove = $('.ab-modal-remove')
   let $formAdd = $form.children('.add').children('textarea')
   let $formAddBefore = $form.children('.add').children('.ab-modal-insert.before')
@@ -223,14 +173,14 @@ let mainInit = function () {
   let currentXpath = '';
 
   $('.ab-modal-item').hide();
-  $('.ab-modal-item[type="'+currentType+'"]').show();
+  $('.ab-modal-item[type="' + currentType + '"]').show();
 
-  $('#am-select').change(function(){
+  $('#am-select').change(function () {
     currentType = $(this).children('option:selected').val()
     $('.ab-modal-item').hide();
-    $('.ab-modal-item[type="'+currentType+'"]').show();
+    $('.ab-modal-item[type="' + currentType + '"]').show();
   });
-  
+
 
   $('.ab').mousemove(function (e) {
 
@@ -253,20 +203,30 @@ let mainInit = function () {
     currentXpath = xpath;
     $('#ab-ip-xpath').val(xpath);
 
+    // 默认填入的信息
+    let initialInfo = {
+      style: {
+        fontSize: window.getComputedStyle(domClick).fontSize,
+        fontColor: window.getComputedStyle(domClick).color,
+        backgroundColor: window.getComputedStyle(domClick).backgroundColor,
+      },
+      text: $(domClick).text(),
+      html: domClick.outerHTML
+    }
+
     // 初始化
-    (function () {
-      $formFontSize.val('')
-      $formFontColor.val('')
-      $formBackground.val('')
+    const setInit = function (initialInfo) {
+      $formFontSize.val(initialInfo.style.fontSize)
+      $formFontColor.val(initialInfo.style.fontColor)
+      $formBackground.val(initialInfo.style.backgroundColor)
       // 填入text信息
-      $formEditText.val($(domClick).text())
+      $formEditText.val(initialInfo.text)
       // 填入html信息
-      $formEditHtml.val(domClick.outerHTML)
+      $formEditHtml.val(initialInfo.html)
       $formAdd.val('')
-    }())
+    }
 
-    // debugger;
-
+    setInit(initialInfo)
     return false;
 
   });
@@ -293,7 +253,7 @@ let mainInit = function () {
     })
     // 移除元素
     $formRemove.bind('click', function () {
-      $(domClick).css('display','none')
+      $(domClick).css('display', 'none')
       removeFlag = true
       // $(domClick).addClass('will-remove')
     })
@@ -322,16 +282,15 @@ let mainInit = function () {
   };
 
 
-  let doABTestRender = function (mainData){
+  let doABTestRender = function (mainData) {
     let domClick = findElementByXpath(mainData.xpath);
-    switch(mainData.type) 
-    {
+    switch (mainData.type) {
       case 'style':
         // 改变DOM样式
         $(domClick).css({
-          'font-size':mainData.style['font-size'],
+          'font-size': mainData.style['font-size'],
           'color': mainData.style['color'],
-          'background-color':mainData.style['background-color'] 
+          'background-color': mainData.style['background-color']
         })
         break;
       case 'text':
@@ -343,13 +302,10 @@ let mainInit = function () {
       case 'remove':
         break;
       case 'insert':
-        if(mainData.add.insertDirection == 'before')
-        {
-          $(domClick).before( mainData.add.html)
-        }
-        else
-        {
-          $(domClick).after( mainData.add.html)
+        if (mainData.add.insertDirection == 'before') {
+          $(domClick).before(mainData.add.html)
+        } else {
+          $(domClick).after(mainData.add.html)
         }
         break;
     }
@@ -357,11 +313,11 @@ let mainInit = function () {
 
   $(".ab-modal-confirm").bind('click', function () {
     let mainData = {
-      type : currentType,
-      xpath : currentXpath
+      type: currentType,
+      xpath: currentXpath
     }
 
-    switch(currentType){
+    switch (currentType) {
       case 'style':
         mainData.style = {
           'font-size': $formFontSize.val(),
@@ -369,7 +325,7 @@ let mainInit = function () {
           'background-color': $formBackground.val()
         };
         break;
-      case 'text':// 改变DOM text
+      case 'text': // 改变DOM text
         mainData.text = $formEditText.val();
         break;
       case 'html':
@@ -383,11 +339,14 @@ let mainInit = function () {
           insertDirection: $('#am-select-direct').val(), // 插入方向
           html: $('#am-tt-add').val()
         };
+      case 'runJs':
+        mainData.js = $formRunJs.val()
+        eval(mainData.js)
         break;
     }
 
     doABTestRender(mainData);
-    
+
 
     // console.log("before:", domClick)
     /* if ($formEditHtml.val()) {

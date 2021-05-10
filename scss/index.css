@@ -1,0 +1,74 @@
+[is-hover="true"] {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+[is-click="true"] {
+  background-color: yellow;
+}
+
+.ab-modal {
+  padding: 20px;
+  position: fixed;
+  top: 10px;
+  right: 0;
+  z-index: 9;
+  background: #fff;
+}
+
+.ab-modal-item {
+  width: 300px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 5px;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.ab-modal-item span {
+  margin-right: 10px;
+}
+
+.ab-modal-confirm {
+  width: 118px;
+  height: 38px;
+  line-height: 38px;
+  background: #4285f4;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  margin: 10px 10px;
+}
+
+.ab-modal-remove {
+  width: 118px;
+  height: 38px;
+  line-height: 38px;
+  background: #e9ebf3;
+  color: #737c8b;
+  text-align: center;
+  cursor: pointer;
+  margin: 10px 10px;
+}
+
+.ab-modal-insert {
+  width: 118px;
+  height: 38px;
+  line-height: 38px;
+  background: #4285f4;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  margin: 10px 10px;
+}
+
+.ab-modal .ab-ip-xpath {
+  width: 300px;
+  margin-bottom: 10px;
+}
+
+.ab-modal .ab-edit-type {
+  margin-bottom: 10px;
+  width: 300px;
+}
+/*# sourceMappingURL=index.css.map */
