@@ -187,7 +187,7 @@ function loadJS(url, callback) {
     }
 };
 
-if(getUrlParams['active'] == true)
+if(getUrlParams()['active'] == '1')
 {
     PAABTestApp.render();
 }
