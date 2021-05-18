@@ -42,43 +42,10 @@ function loadJS(url, callback) {
 
 }
 
-// loadJS('./lib/jquery.min.js', function () {
-//   loadJS('./lib/wgxpath.install.js', function () {
-//     loadJS('./lib/jquery-path-1.0.7.js', function () {
-//       mainInitN();
-//     })
-//   });
-// });
+let mainInitN = function (renderData) {
 
-let mainInitN = function () {
-
-  // let mainDataArray = [{
-  //   "xpath": "//html/body/div[@class='ab']/button[1]",
-  //   "style": {
-  //     "fontSize": "20px",
-  //     "color": "red",
-  //     "backgroundColor": "blue"
-  //   }
-  // }, {
-  //   "xpath": "//html/body/div[@class='ab']/button[2]",
-  //   "style": {
-  //     "fontSize": "30px",
-  //     "color": "yellow",
-  //     "backgroundColor": "gray"
-  //   }
-  // }];
-  let mainDataArray = JSON.parse(localStorage.mainDataArray)
-  console.log(JSON.parse(localStorage.mainDataArray))
-  console.log(typeof localStorage.mainDataArray)
-  // let mainData0 = {
-  //     xpath: "//html/body/div[@class='ab']/p[@class='ddd']",
-  //     style: {
-  //       'fontSize': '30px',
-  //       'color': 'blue',
-  //       'backgroundColor': 'red'
-  //     }
-  //   };
-
+  let mainDataArray = renderData
+  console.group("子页面的localStorage：", JSON.parse(localStorage.mainDataArray))
 
   let findElementByXpath = function (xpath) {
     let element;
@@ -86,43 +53,51 @@ let mainInitN = function () {
     element = $.xpath(xpath, window.document);
 
     return element
-  };;
+  };
 
+  console.log("渲染子页面时被历史操作修改后的数据：", mainDataArray)
+
+  const memoryHtml = (mainData) => {
+    // if(mainData.type === 'insert'){
+    //   $('.')
+    // }
+
+  }
 
   let render = function (mainData) {
     let xele = findElementByXpath(mainData.xpath);
-    switch(mainData.type)
-    {
-      case 'style':
-        for (const key in mainData.style) {
-          if (mainData.style.hasOwnProperty(key)) {
-            const value = mainData.style[key];
-            $(xele)[0].style[key] = value;
+    for(let i=0; i<xele.length; i++){
+      switch (mainData.type) {
+        case 'style':
+          for (const key in mainData.style) {
+            if (mainData.style.hasOwnProperty(key)) {
+              const value = mainData.style[key];
+              $(xele)[i].style[key] = value;
+            }
           }
-        }
-        break;
-      case 'text':// 替换文本内容
-        $(xele).text(mainData.text);
-        break;
-      case 'html':
-        $(xele).replaceWith(mainData.html);
-        break;
-      case 'insert': // 插入增加的html
-        if(mainData.add.insertDirection === 'before'){
-          $(xele).before(mainData.add.html)
-        }else{
-          $(xele).after(mainData.add.html)
-        }
-        break;
-      case 'remove':// 删除元素
-        if(mainData.removeFlag){
-          $(xele).css('display','none')
-        }
-      case 'runJs':
-        eval(mainData.js)
-        break;
+          break;
+        case 'text': // 替换文本内容
+          $(xele).text(mainData.text);
+          break;
+        case 'html':
+          $(xele).replaceWith(mainData.html);
+          break;
+        case 'insert': // 插入增加的html
+          if (mainData.add.insertDirection === 'before') {
+            $(xele).before(mainData.add.html)
+          } else {
+            $(xele).after(mainData.add.html)
+          }
+          break;
+        case 'remove': // 删除元素
+          if (mainData.removeFlag) {
+            $(xele).css('display', 'none')
+          }
+          case 'runJs':
+            eval(mainData.js)
+            break;
+      }
     }
-    
   }
 
   for (let index = 0; index < mainDataArray.length; index++) {
@@ -134,19 +109,69 @@ let mainInitN = function () {
 
 }
 
+const avtiveBtn = `
+  <div class="paab-btn fixed active" style="box-sizing: border-box;
+  background-image: none;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  color: rgba(0, 0, 0, .85);
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  height: 32px;
+  line-height: 1.5715;
+  padding: 4px 15px;
+  position: relative;
+  text-align: center;
+  touch-action: manipulation;
+  transition: all .3s cubic-bezier(.645, .045, .355, 1);
+  position:fixed;
+  top:100px;
+  left:0;
+  background: #4285f4;
+  border-color: #4285f4;
+  color: #fff;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  white-space: nowrap;">
+    <span>应用</span>
+  </div>
+`
+document.write(avtiveBtn)
+
+let mainDataArray = JSON.parse(localStorage.mainDataArray)
+document.querySelector('.active').onclick = () => {
+  PAABTestApp.render(mainDataArray);
+}
 
 let PAOptionsApp = {
-  basePath : 'https://laicengfan.github.io/abtest-demo'
+  basePath: 'https://laicengfan.github.io/abtest-demo',
 }
 
 window.addEventListener("message", receiveMessageApp, false);
 
-function receiveMessageApp(event)
-{
-  if(event.data.method == 'render')
-  {
-    PAABTestApp.render();
+function receiveMessageApp(event) {
+  if (event.data.method == 'save') {
+    console.log('我收到了父页面的通讯')
+    let mainDataArray = JSON.parse(localStorage.mainDataArray)
+    document.querySelector('.active').onclick = () => {
+      PAABTestApp.render(mainDataArray);
+    }
+    // console.log("event.data.method == render：",event.data.content)
+  } else if (event.data.method == 'history-render') {
+    PAABTestApp.render(mainDataArray);
+    // console.log("event.data.method == history-render：",event.data.content)
   }
+  else if(event.data.method === 'delete'){
+    // 同步被删除操作后的数据
+    mainDataArray = JSON.parse(localStorage.mainDataArray)
+    PAABTestApp.render(mainDataArray);
+  }
+
 
   // For Chrome, the origin property is in the event.originalEvent
   // object.
@@ -160,11 +185,11 @@ function receiveMessageApp(event)
 }
 
 let PAABTestApp = {
-  render : () => {
+  render: (renderData) => {
     loadJS(PAOptionsApp.basePath + '/lib/jquery.min.js', function () {
       loadJS(PAOptionsApp.basePath + '/lib/wgxpath.install.js', function () {
         loadJS(PAOptionsApp.basePath + '/lib/jquery-path-1.0.7.js', function () {
-          mainInitN();
+          mainInitN(renderData);
         })
       });
     });

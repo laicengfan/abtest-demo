@@ -6,7 +6,10 @@ function loadJS(url, callback) {
   3.demo样式优化
   4.操作历史记录先展示
   5.历史记录的编辑与删除
-  6.跨域页面的引入修改 */
+  6.跨域页面的引入修改 
+  7.xpath修改
+  8.删除应用
+  */
 
   var script = document.createElement('script'),
 
@@ -50,20 +53,10 @@ function loadJS(url, callback) {
 
 }
 
-
-// loadJS('./lib/jquery.min.js', function () {
-//   loadJS('./lib/wgxpath.install.js', function () {
-//     loadJS('./lib/jquery-path-1.0.7.js', function () {
-//       addStyles();
-//       mainInit();
-//     })
-//   });
-// });
-
 let addStyles = function () {
   let head = document.getElementsByTagName('head')[0]
   let link = document.createElement('link')
-  link.href = PAOptions.basePath + '/scss/index.css'
+  link.href = PAOptions.localPath + '/scss/index.css'
   link.rel = 'stylesheet'
   link.type = 'text/css'
   head.appendChild(link)
@@ -76,13 +69,13 @@ let addPopDiv = function () {
   let popDiv = `
   <div class="ab-modal">
       <div>
-        <div class="ab-model-item-wrap">
+        <div class="ab-modal-item-wrap">
           <span>xpath路径：</span>
-          <input class="ab-ip-xpath" id="ab-ip-xpath" />
+          <input class="paab-input" class="ab-ip-xpath" id="ab-ip-xpath" />
         </div>
       </div>
-      <div class="ab-model-item ab-edit-type">
-        <div class="ab-model-item-wrap">
+      <div class="ab-model-item ab-edit-type" style="margin:10px 0;">
+        <div class="ab-modal-item-wrap">
           <span>操作类型：</span>
           <select id="am-select" value="style">
             <span>类型</span>
@@ -96,65 +89,67 @@ let addPopDiv = function () {
         </div>
       </div>
       <div class="ab-modal-item fontSize" type="style">
-        <div class="ab-model-item-wrap">
+        <div class="ab-modal-item-wrap">
           <span>字体大小：</span>
-          <input type="text">
+          <input class="paab-input" type="text">
         </div>
       </div>
       <div class="ab-modal-item fontColor" type="style">
-        <div class="ab-model-item-wrap">
+        <div class="ab-modal-item-wrap">
           <span>字体颜色：</span>
-          <input type="text">
+          <input class="paab-input" type="text">
         </div>
       </div>
       <div class="ab-modal-item background" type="style">
-        <div class="ab-model-item-wrap">
+        <div class="ab-modal-item-wrap">
           <span>背景颜色：</span>
-          <input type="text">
+          <input class="paab-input" type="text">
         </div>
       </div>
       <div class="ab-modal-item editText" type="text">
-        <div class="ab-model-item-wrap">
+        <div class="ab-modal-item-wrap">
           <span>编辑内容：</span>
-          <textarea type="text" rows="5" cols="30"></textarea>
+          <textarea class="paab-input" type="text" rows="5" cols="30"></textarea>
         </div>
       </div>
       <div class="ab-modal-item editHtml" type="html">
-        <div class="ab-model-item-wrap">
+        <div class="ab-modal-item-wrap">
           <span>编辑HTML：</span>
-          <textarea type="text" rows="5" cols="30"></textarea>
+          <textarea class="paab-input" type="text" rows="5" cols="30"></textarea>
         </div>
       </div>
       <div class="ab-modal-item runJs" type="runJs">
-        <div class="ab-model-item-wrap">
+        <div class="ab-modal-item-wrap">
           <span>编辑JS：</span>
-          <textarea type="text" rows="5" cols="30"></textarea>
+          <textarea class="paab-input" type="text" rows="5" cols="30"></textarea>
         </div>
-        <div class="ab-modal-item add" type="insert">
-          <div class="ab-model-item-wrap">
-            <span>添加元素：</span>
-            <textarea id="am-tt-add" type="text" rows="5" cols="30"></textarea>
-            <select id="am-select-direct" value="before">
-              <span>方向</span>
-              <option value="before">before</option>
-              <option value="after">after</option>
-            </select>
-          </div>
+      </div>
+      <div class="ab-modal-item add" type="insert">
+        <div class="ab-modal-item-wrap">
+          <span>添加元素：</span>
+          <textarea class="paab-input" id="am-tt-add" type="text" rows="5" cols="30"></textarea>
+          <select id="am-select-direct" value="before">
+            <span>方向</span>
+            <option value="before">before</option>
+            <option value="after">after</option>
+          </select>
         </div>
       </div>
       <div class="ab-modal-item remove" type="remove">
-        <div class="ab-model-item-wrap">
+        <div class="ab-modal-item-wrap">
           <div class="ab-modal-remove">删除元素</div>
         </div>
       </div>
-      <div class="ab-modal-btn">
-        <div class="ab-modal-confirm">确认</div>
+      <div class="ab-modal-footer">
+        <div class="ab-modal-btn confirm"><span>确认</span></div>
+        <div class="ab-modal-btn cancel"><span>取消</span></div>
       </div>
     </div>
   `;
 
   let div = document.createElement('div');
   div.id = 'ab-model';
+  div.className = 'unique-box';
   div.style.display = 'none';
   div.innerHTML = popDiv;
   document.body.appendChild(div);
@@ -202,6 +197,7 @@ let mainInit = function () {
 
   $('#am-select').change(function () {
     currentType = $(this).children('option:selected').val()
+    console.log(currentType)
     $('.ab-modal-item').hide();
     $('.ab-modal-item[type="' + currentType + '"]').show();
   });
@@ -219,7 +215,7 @@ let mainInit = function () {
   });
 
   $(document.body).click(function (e) {
-    if($(e.target).parents('.ab-modal').length > 0)
+    if($(e.target).parents('.unique-box').length > 0)
     {
       return;
     }
@@ -229,8 +225,9 @@ let mainInit = function () {
     $(e.target).attr('is-click', true);
 
     domClick = lastClick;
-
+    
     $('#ab-model').show();
+    $('.ab-modal').show();
 
     let xpath = getXPath(domClick);
     currentXpath = xpath;
@@ -345,7 +342,7 @@ let mainInit = function () {
     }
   };
 
-  $(".ab-modal-confirm").bind('click', function () {
+  $(".ab-modal-btn.confirm").bind('click', function () {
     let mainData = {
       type: currentType,
       xpath: currentXpath
@@ -381,63 +378,6 @@ let mainInit = function () {
 
     doABTestRender(mainData);
 
-
-    // console.log("before:", domClick)
-    /* if ($formEditHtml.val()) {
-      // doNotTrack.html($formEditHtml.val())
-      //domClick.outerHTML = $formEditHtml.val()
-
-
-      let newDiv = document.createElement('div');
-      newDiv.innerHTML = $formEditHtml.val();
-      // newDiv.id = 'abc';
-      $(newDiv).children().attr('id', 'abc')
-      $(domClick).after($(newDiv).children());
-      $(domClick).remove()
-      // domClick = document.createElement($formEditHtml.val())
-      // domClick = document.createElement("p")
-      //domClick.setAttribute("id","abc")
-      //$(domClick)[0].id='abc';
-      domClick = document.getElementById('abc')
-      //domClick = $($formEditHtml.val())[0]
-      console.log(domClick);
-    } */
-
-    // console.log("after:", domClick)
-
-    // if($(domClick).hasClass('will-remove')){
-    //   $(domClick).remove()
-    // }
-
-    // let xpath = getXPath(domClick);
-    // console.log('xpath' + xpath);
-
-    // let mainData = {
-    //   xpath: xpath,
-    //   style: {
-    //     'fontSize': $formFontSize.val(),
-    //     'color': $formFontColor.val(),
-    //     'backgroundColor': $formBackground.val()
-    //   },
-    //   // 标签内容
-    //   text: $formEditText.val(),
-    //   // 移除标志
-    //   removeFlag:removeFlag,
-    //   // 插入html
-    //   add: {
-    //     // 插入方向
-    //     insertDirection: insertDirection,
-    //     html: $formAdd.val()
-    //   },
-    //   // Todo判断是不是单个元素的重复修改
-    //   // againFlag: false
-
-    // };
-    // mainData.attr = {
-    //   'text': $formEditText.val(),
-    //   'html': $formEditHtml.val(),
-    // }
-
     mainDataArray.push(mainData);
 
     let userStorage = window.localStorage
@@ -446,8 +386,12 @@ let mainInit = function () {
     } else {
       userStorage.setItem('mainDataArray', JSON.stringify(mainDataArray))
     }
-    console.log(userStorage)
     console.log(mainDataArray);
+    console.log(userStorage)
+  })
+
+  $(".ab-modal-btn.cancel").bind('click',function(){
+    $('.ab-modal').css('display','none')
   })
 
 
@@ -464,14 +408,17 @@ let mainInit = function () {
 
 
 let PAOptions = {
-  basePath : 'https://laicengfan.github.io/abtest-demo'
+  basePath : 'https://laicengfan.github.io/abtest-demo',
+  localPath : 'http://127.0.0.1:5500'
 }
 
 
 window.addEventListener("message", receiveMessage, false);
 
+// 子页面获取父页面数据后，传回数据给父页面
 function receiveMessage(event)
 {
+  console.log(event)
   if(event.data.method == 'check-sdk')
   {
     window.parent.postMessage({
@@ -483,6 +430,33 @@ function receiveMessage(event)
     PAABTest.start();
   }
 
+  else if(event.data.method == 'history'){
+    console.log('method = history',localStorage.mainDataArray)
+    window.parent.postMessage({
+      method:'history-ok',
+      content: JSON.parse(localStorage.mainDataArray)
+    },'*');
+  }
+
+  else if(event.data.method == 'will-change'){
+    mainDataArray = JSON.parse(event.data.content)
+    localStorage.setItem('mainDataArray',JSON.stringify(mainDataArray))
+    console.log("子页面被历史操作修改后的数据：",mainDataArray)
+    window.parent.postMessage({
+      method:'changed',
+    },'*');
+  }
+
+  else if(event.data.method === 'delete'){
+    // 同步被删除操作后的数据
+    mainDataArray = JSON.parse(event.data.content)
+    console.log('method = delete:',mainDataArray)
+    localStorage.setItem('mainDataArray',JSON.stringify(mainDataArray))
+    window.parent.postMessage({
+      method:'history-ok',
+      content: JSON.parse(localStorage.mainDataArray)
+    },'*');
+  }
   // For Chrome, the origin property is in the event.originalEvent
   // object.
   // 这里不准确，chrome没有这个属性
@@ -502,7 +476,6 @@ let PAABTest = {
         loadJS(PAOptions.basePath + '/lib/jquery-path-1.0.7.js', function () {
           addStyles();
           mainInit();
-
         })
       });
     });

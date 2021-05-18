@@ -1,4 +1,14 @@
-$baseCls:ab-modal;
+$baseCls: paab;
+$injectCls:ab-modal;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+}
 
 [is-hover="true"] {
   background-color: rgba(0, 0, 0, 0.1);
@@ -33,77 +43,294 @@ $baseCls:ab-modal;
   }
 }
 
+@mixin btn {
+  box-sizing: border-box;
+  background-image: none;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  color: rgba(0, 0, 0, .85);
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  height: 32px;
+  line-height: 1.5715;
+  padding: 4px 15px;
+  position: relative;
+  text-align: center;
+  touch-action: manipulation;
+  transition: all .3s cubic-bezier(.645, .045, .355, 1);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  white-space: nowrap;
+
+  &:hover {
+    background: #fff;
+    border-color: #4285f4;
+    color: #4285f4;
+  }
+}
+
+@mixin btn-primary {
+  background: #4285f4;
+  border-color: #4285f4;
+  color: #fff;
+
+  &:hover {
+    background: #40a9ff;
+    border-color: #40a9ff;
+    color: #fff;
+  }
+}
+
+select {
+  border: none;
+  outline: none;
+  padding-left: 20px;
+  color: #6d6d6d;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  @include defaultInput();
+  width: 100%;
+}
+
 .#{$baseCls} {
-  padding: 20px;
+  &-btn {
+    @include btn();
+
+    &-primary {
+      @include btn-primary();
+    }
+  }
+
+  &-input {
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, .85);
+    display: inline-block;
+    font-size: 14px;
+    line-height: 1.5715;
+    list-style: none;
+    margin: 0;
+    min-width: 0;
+    padding: 4px 11px;
+    position: relative;
+    transition: all .3s;
+    width: 100%;
+
+    &:focus {
+      border-color: #4285f4;
+      border-right-width: 1px !important;
+      box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
+      outline: 0;
+    }
+
+    &:hover {
+      border-color: #4285f4;
+      border-right-width: 1px !important;
+    }
+  }
+
+  &-header{
+    margin: 10px 0;
+    &-content{
+      display: flex;
+    }
+    &-item{
+      margin: 0 4px;
+    }
+    input{
+      @include defaultInput();
+    }
+  }
+
+  &-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .45);
+    z-index: 8;
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+
+  &-modal {
+    &-wrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      background: #fff;
+    }
+
+    &-header {
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+      border-radius: 2px 2px 0 0;
+      color: rgba(0, 0, 0, .85);
+      padding: 16px 24px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-direction: row-reverse;
+      justify-content: space-between;
+
+      i {
+        font-style: normal;
+        cursor: pointer;
+        color: #999;
+        transition: all .3s;
+
+        &:hover {
+          color: #333;
+        }
+      }
+    }
+
+    &-body {
+      word-wrap: break-word;
+      font-size: 14px;
+      line-height: 1.5715;
+      padding: 24px;
+    }
+
+    &-footer {
+      background: 0 0;
+      border-radius: 0 0 2px 2px;
+      border-top: 1px solid #f0f0f0;
+      padding: 10px 16px;
+      text-align: right;
+    }
+  }
+
+  &-history {
+    width: 200px;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 9;
+
+    i {
+      &.close {
+        position: absolute;
+        right: 10px;
+        top: 20px;
+        font-style: normal;
+        cursor: pointer;
+      }
+    }
+
+    &-wrap {
+      margin-top: 34px;
+    }
+
+    &.active {
+      display: block;
+    }
+
+    &-list {
+      &-item {
+        margin: 12px 0;
+
+        &-wrap {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        p {
+          font-size: 16px;
+          color: #4285f4;
+        }
+
+        div {
+          span {
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+            transition: all .3s;
+
+            &:hover {
+              color: #4285f4;
+            }
+          }
+        }
+      }
+    }
+
+    &-panel {
+      &-item {
+        margin: 8px 0;
+
+        &-wrap {
+          display: flex;
+          align-items: center;
+        }
+
+        p {
+          width: 120px;
+          text-align: right;
+        }
+      }
+    }
+
+    &-opt {
+      display: none;
+    }
+  }
+}
+
+.#{$injectCls} {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
   right: 0;
-  z-index: 9;
   background: #fff;
-  border: 1px solid #f0f0f0;
   border-radius: 2px;
-
-  &>div {
-    input {
-      @include defaultInput()
-    }
-  }
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, .85);
+  border: 1px solid #f0f0f0;
+  padding: 20px;
 
   &-item {
-    width: 300px;
+    margin: 10px 0;
+
+    &-wrap {
+      display: flex;
+
+      span {
+        font-size: 14px;
+        width: 120px;
+      }
+    }
+  }
+
+  &-footer{
     display: flex;
-    margin-bottom: 5px;
-    flex-wrap: wrap;
-
-
-
-    input {
-      width: 66.7%;
-      @include defaultInput()
-    }
-
-    span {
-      width: 33.3%;
-      margin-right: 10px;
+    justify-content: center;
+  }
+  &-btn{
+    margin: 10px 15px;
+    @include btn();
+    &.confirm{
+      @include btn-primary();
     }
   }
-
-  &-confirm {
-    width: 118px;
-    height: 38px;
-    line-height: 38px;
-    background: #4285f4;
-    color: #fff;
-    text-align: center;
-    cursor: pointer;
-    margin: 10px 10px;
-  }
-
-  &-remove {
-    width: 118px;
-    height: 38px;
-    line-height: 38px;
-    background: #e9ebf3;
-    color: #737c8b;
-    text-align: center;
-    cursor: pointer;
-    margin: 10px 10px;
-  }
-
-  &-insert {
-    width: 118px;
-    height: 38px;
-    line-height: 38px;
-    background: #4285f4;
-    color: #fff;
-    text-align: center;
-    cursor: pointer;
-    margin: 10px 10px;
-  }
-  .ab-edit-type {
-    margin-bottom: 10px;
-    width: 300px;
-  }
-
 }

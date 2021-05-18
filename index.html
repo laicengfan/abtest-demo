@@ -2,16 +2,12 @@
 <html>
 
 <head>
-  <title>jQuery XPath plugin test page</title>
+  <title>abtest-demo页面</title>
+  <link rel="stylesheet" href="./scss/index.css">
   <style type="text/css">
     body {
       font-family: Arial;
       font-size: 0.8em;
-    }
-
-    p {
-      margin-top: 0.5em;
-      margin-bottom: 0.5em;
     }
 
     html,
@@ -32,104 +28,152 @@
 </head>
 
 <body>
-  
-  <button id="addSelect">开始添加ABTest</button>
-  <button id="addStyles">应用ABTest</button>
-  <input value="/test/test-path2.html" id="ip-url" />
-  <button id="btn-go"> go </button>
-  <span> | </span>
-  <button id="btn-check-sdk"> 检测SDK </button>
-  <button id="btn-start"> Start </button>
-  <button id="btn-active"> Active </button>
-  <div class="ab">
-    <iframe id="iframe" src="./test-path2.html">
-    </iframe>
-    
+  <div class="paab">
+    <div class="paab-header">
+      <div class="paab-header-wrap">
+        <button id="addSelect" style="display: none;">开始添加ABTest</button>
+        <button id="addStyles" style="display: none;">应用ABTest</button>
+        <div class="paab-header-content">
+          <div class="paab-header-item">
+            <input value="http://127.0.0.1:5501/list.html" id="ip-url" />
+            <div class="paab-btn" id="btn-go"> go </div>
+          </div>
+          <div class="paab-header-item">
+            <div class="paab-btn" id="btn-check-sdk"> 检测SDK </div>
+          </div>
+          <div class="paab-header-item">
+            <div class="paab-btn" id="btn-start"> Start </div>
+          </div>
+          <div class="paab-header-item">
+            <div class="paab-btn" id="btn-save"> 保存 </div>
+          </div>
+          <div class="paab-header-item">
+            <div class="paab-btn" id="btn-history"> 历史操作 </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="paab-container" style="height:1000px;">
+      <iframe id="iframe" src="./test-path2.html"></iframe>
+    </div>
+    <div class="paab-history">
+      <i class="close">X</i>
+      <div class="paab-history-wrap">
+      </div>
+      <ul class="paab-history-opt">
+        <li class="paab-history-opt-edit">编辑</li>
+        <li class="paab-history-opt-delete">删除</li>
+      </ul>
+    </div>
+    <div class="paab-mask">
+      <div class="paab-modal">
+        <div class="paab-modal-wrap">
+          <div class="paab-modal-header">
+            <i>X</i>
+          </div>
+          <div class="paab-modal-body">
 
-    <script type="text/javascript">
-      function loadJS(doc, url, callback) {
+          </div>
+          <div class="paab-modal-footer">
+            <div class="paab-btn paab-btn-primary confirm"><span>确定</span></div>
+            <div class="paab-btn cancel"><span>取消</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        var script = doc.createElement('script'),
-
-          fn = callback || function () {};
-
-        script.type = 'text/javascript';
+  </div>
 
 
 
-        //IE
+  <script src="./lib/jquery.min.js"></script>
+  <script type="text/javascript">
+    function loadJS(doc, url, callback) {
 
-        if (script.readyState) {
+      var script = doc.createElement('script'),
 
-          script.onreadystatechange = function () {
+        fn = callback || function () {};
 
-            if (script.readyState == 'loaded' || script.readyState == 'complete') {
+      script.type = 'text/javascript';
 
-              script.onreadystatechange = null;
 
-              fn();
 
-            }
+      //IE
 
-          };
+      if (script.readyState) {
 
-        } else {
+        script.onreadystatechange = function () {
 
-          //其他浏览器
+          if (script.readyState == 'loaded' || script.readyState == 'complete') {
 
-          script.onload = function () {
+            script.onreadystatechange = null;
 
             fn();
 
-          };
+          }
 
-        }
+        };
 
-        script.src = url;
+      } else {
 
-        doc.getElementsByTagName('head')[0].appendChild(script);
+        //其他浏览器
+
+        script.onload = function () {
+
+          fn();
+
+        };
 
       }
 
-      // loadJS(document,'./js/myXpath.js',function(){
-      //         console.log('finish 1');
-      //     });
+      script.src = url;
 
-      document.getElementById('addSelect').addEventListener('click', function () {
-        var obj = document.getElementById("iframe").contentWindow.document;
-        loadJS(obj, './js/myXpath.js', function () {
-          console.log('finish 1');
-        });
-      });
+      doc.getElementsByTagName('head')[0].appendChild(script);
 
-      document.getElementById('addStyles').addEventListener('click', function () {
-        var obj = document.getElementById("iframe").contentWindow.document;
-        loadJS(obj, './js/myNewVersion.js', function () {
-          console.log('finish 2');
-        });
+    }
+
+    // loadJS(document,'./js/myXpath.js',function(){
+    //         console.log('finish 1');
+    //     });
+
+    document.getElementById('addSelect').addEventListener('click', function () {
+      var obj = document.getElementById("iframe").contentWindow.document;
+      loadJS(obj, './js/myXpath.js', function () {
+        console.log('finish 1');
       });
+    });
+
+    document.getElementById('addStyles').addEventListener('click', function () {
+      var obj = document.getElementById("iframe").contentWindow.document;
+      loadJS(obj, './js/myNewVersion.js', function () {
+        console.log('finish 2');
+      });
+    });
 
     document.getElementById('btn-go').addEventListener('click', function () {
       document.getElementById("iframe").src = document.getElementById('ip-url').value;
     });
 
-    function domainURI(str){  
-      var durl=/http:\/\/([^\/]+)\//i;  
-      domain = str.match(durl);  
-      return domain[1];  
-    }  
-  
+    function domainURI(str) {
+      var durl = /http:\/\/([^\/]+)\//i;
+      domain = str.match(durl);
+      return domain[1];
+    }
+
+    $('.paab-history .close').bind('click', function () {
+      $('.paab-history').removeClass('active')
+    })
+
     let checkSdk = false;
     let subOrigin = '*';
 
     document.getElementById('btn-check-sdk').addEventListener('click', function () {
       checkSdk = false;
       window.frames[0].postMessage({
-        method:'check-sdk'
-      },subOrigin);
+        method: 'check-sdk'
+      }, subOrigin);
       setTimeout(() => {
-        if(!checkSdk)
-        {
+        if (!checkSdk) {
           alert('未安装sdk！');
         }
       }, 2000);
@@ -137,24 +181,324 @@
 
     document.getElementById('btn-start').addEventListener('click', function () {
       window.frames[0].postMessage({
-        method:'start'
-      },subOrigin);
+        method: 'start'
+      }, subOrigin);
     });
-    document.getElementById('btn-active').addEventListener('click', function () {
+    document.getElementById('btn-save').addEventListener('click', function () {
       window.frames[0].postMessage({
-        method:'render'
-      },subOrigin);
+        method: 'save'
+      }, subOrigin);
     });
+    document.getElementById('btn-history').addEventListener('click', function () {
+      window.frames[0].postMessage({
+        method: 'history'
+      }, subOrigin);
+    });
+
+
+
+
+    // 渲染历史记录弹窗
+    const optHistoryList = (historyData, curIndex) => {
+      let historyDataItem = historyData[curIndex]
+      let lineContent = ""
+      console.log(historyData[curIndex])
+      switch (historyDataItem.type) {
+        case 'style':
+          lineContent = `
+          <div class="paab-history-panel" type="style">
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>xpath路径：</p>
+                <input id="xpath" class="paab-input" type="text" value="${historyDataItem.xpath}">
+              </div>
+            </div>
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>字体大小：</p>
+                <input id="fontSize" class="paab-input" type="text" value="${historyDataItem.style["font-size"]}">
+              </div>
+            </div>
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>字体颜色：</p>
+                <input id="fontColor" class="paab-input" type="text" value="${historyDataItem.style.color}">
+              </div>
+            </div>
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>背景颜色：</p>
+                <input id="background" class="paab-input" type="text" value="${historyDataItem.style["background-color"]}">
+              </div>
+            </div>
+          </div>
+          `
+          break;
+
+        case 'text':
+          lineContent = `
+          <div class="paab-history-panel" type="text">
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>xpath路径：</p>
+                <input class="paab-input" type="text" value="${historyDataItem.xpath}">
+              </div>
+            </div>
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>编辑内容：</p>
+                <textarea id="text" class="paab-input" type="text" rows="5" cols="30" value="${historyDataItem.text}">${historyDataItem.text}</textarea>
+              </div>
+            </div>
+          </div>
+          `
+          break;
+        case 'html':
+          lineContent = `
+          <div class="paab-history-panel" type="html">
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>xpath路径：</p>
+                <input class="paab-input" type="text" value="${historyDataItem.xpath}">
+              </div>
+            </div>
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>编辑HTML：</p>
+                <textarea id="html" class="paab-input" type="text" rows="5" cols="30" value="${historyDataItem.html}">${historyDataItem.html}</textarea>
+              </div>
+            </div>
+          </div>
+          `
+          break;
+        case 'runJs':
+          lineContent = `
+          <div class="paab-history-panel" type="runJs">
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>xpath路径：</p>
+                <input class="paab-input" type="text" value="${historyDataItem.xpath}">
+              </div>
+            </div>
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>编辑JS：</p>
+                <textarea id="runJs" class="paab-input" type="text" rows="5" cols="30" value="${historyDataItem.js}">${historyDataItem.js}</textarea>
+              </div>
+            </div>
+          </div>
+          `
+          break;
+
+        case 'insert':
+          lineContent = `
+          <div class="paab-history-panel" type="insert">
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>xpath路径：</p>
+                <input class="paab-input" type="text" value="${historyDataItem.xpath}">
+              </div>
+            </div>
+            <div class="paab-history-panel-item">
+              <div class="paab-history-panel-item-wrap">
+                <p>插入HTML：</p>
+                <textarea id="insert" class="paab-input" type="text" rows="5" cols="30" value="${historyDataItem.add.html}">${historyDataItem.add.html}</textarea>
+              </div>
+            </div>
+          </div>
+          `
+          break;
+
+        default:
+          break;
+      }
+      // console.log(lineContent)
+      $('.paab-modal-body').append(lineContent)
+    }
+
+    // 全局编辑索引
+    let editIndex = 0
+    // 全局删除索引
+    let deleteIndex = 0
+    // 渲染历史记录面板
+    const renderHistoryList = (historyData) => {
+      let template = ''
+      historyData.map((item, index) => {
+        template += `
+          <div class="paab-history-list-item">
+            <div class="paab-history-list-item-wrap">
+              <p>${index+1}.${item.type}</p>
+              <div class="paab-history-more">
+                <span class="change">修改</span>
+                <span class="delete">删除</span>
+              </div>
+            </div>
+          </div>
+          `
+      })
+      template = `
+      <div class="paab-history-list">
+        ${template}
+      </div>
+      `
+      if ($('.paab-history-wrap').children().length < 1) {
+        $('.paab-history-wrap').append(template)
+      }
+      $('.paab-history-more .change').bind('click', function () {
+        $('.paab-mask').addClass('active')
+
+      })
+      $('.paab-history-more .change').bind('click', function () {
+        let curIndex = $(this).parents('.paab-history-list-item').index()
+        editIndex = curIndex
+        $('.paab-history-panel').remove()
+        optHistoryList(historyData, curIndex)
+      })
+
+    }
+
+
+    $('.paab-mask').bind('click', function () {
+      $(this).removeClass('active')
+    })
+    $('.paab-modal-header i, .paab-btn.cancel').bind('click', function () {
+      $('.paab-mask').removeClass('active')
+    })
+    $('.paab-modal').bind('click', function (e) {
+      e.stopPropagation()
+    })
+
+    // 删除了历史记录面板
+    const deleteHistoryList = (historyData) => {
+      $('.paab-history-more .delete').bind('click', function () {
+        console.log(historyData)
+        let curIndex = $(this).parents('.paab-history-list-item').index()
+        deleteIndex = curIndex
+        // 修改数据
+        let deleteArr = historyData.filter((item, index) => {
+          return curIndex !== index
+        })
+        // historyData = deleteArr
+        historyData = deleteArr
+        userStorage = deleteArr
+        // 移除DOM元素
+        $('.paab-history-list-item').eq(deleteIndex).remove()
+        
+        $('#iframe').attr('src', $('#iframe').attr('src'))
+
+        // 与子页面通讯，同步userStorage数据
+        setTimeout(() => {
+          
+          window.frames[0].postMessage({
+            method: 'delete',
+            content: JSON.stringify(userStorage)
+          }, subOrigin);
+          
+        }, 500);
+
+        console.log(userStorage)
+        console.log(deleteIndex)
+      })
+    }
+
+    // 编辑历史记录的操作
+    const editHistory = () => {
+      // 修改userStorage，并把新的值赋给localStorage
+      $('.paab-modal-footer').children('.confirm').bind('click', function () {
+        let $form = $('.paab-history-panel')
+        // 当前被点击的面板类型
+        const curType = $('.paab-history-panel').attr('type')
+        switch (curType) {
+          case 'style':
+            let $formFontSize = $form.find('#fontSize')
+            let $formFontColor = $form.find('#fontColor')
+            let $formBackground = $form.find('#background')
+            let $xpath = $form.find('#xpath')
+            // 数据修改
+            userStorage[editIndex].style['background-color'] = $formBackground.val()
+            userStorage[editIndex].style['font-size'] = $formFontSize.val()
+            userStorage[editIndex].style.color = $formFontColor.val()
+            userStorage[editIndex].xpath = $xpath.val()
+            // console.log(editIndex)
+            break;
+
+          case 'text':
+            let $formEditText = $form.find('#text')
+            userStorage[editIndex].text = $formEditText.val()
+            break;
+
+          case 'html':
+            let $formEditHtml = $form.find('#html')
+            userStorage[editIndex].html = $formEditHtml.val()
+            break;
+
+          case 'runJs':
+            let $formRunJs = $form.find('#runJs')
+            userStorage[editIndex].js = $formRunJs.val()
+            break;
+
+          case 'insert':
+            let $formInsert = $form.find('#insert')
+            userStorage[editIndex].add.html = $formInsert.val()
+            break;
+
+          default:
+            break;
+        }
+
+        // 修改后的userStorage赋值给缓存localStorage
+        console.log("修改后的user：", userStorage)
+
+        $('#iframe').attr('src', $('#iframe').attr('src'))
+
+        window.frames[0].postMessage({
+          method: 'will-change',
+          content: JSON.stringify(userStorage)
+        }, subOrigin);
+
+        // window.localStorage.setItem('newData',JSON.stringify(userStorage))
+      })
+    }
+
+
+
+    editHistory()
+
+    let userStorage = []
 
     window.addEventListener("message", receiveMessage, false);
 
-    function receiveMessage(event)
-    {
-      if(event.data.method == 'check-sdk-ok')
-      {
+    console.log(userStorage)
+
+    // 父页面接收子页面数据后执行的回调
+    function receiveMessage(event) {
+      if (event.data.method == 'check-sdk-ok') {
         checkSdk = true;
         alert('sdk安装成功');
       }
+
+      // 渲染历史操作侧栏
+      if (event.data.method == 'history-ok') {
+        userStorage = event.data.content
+        // 有修改记录
+        if (userStorage && userStorage.length > 0) {
+          renderHistoryList(userStorage)
+          $(".paab-history").addClass('active')
+          deleteHistoryList(userStorage)
+        }
+      }
+
+      if (event.data.method == 'changed') {
+        $('.paab-mask').removeClass('active')
+        setTimeout(() => {
+          window.frames[0].postMessage({
+          method: 'history-render',
+        }, subOrigin);
+        },500)
+        
+      }
+      console.error('主页面的event.data：', event.data)
+      console.error('主页面的localStorage：', window.localStorage)
       // For Chrome, the origin property is in the event.originalEvent
       // object.
       // 这里不准确，chrome没有这个属性
@@ -165,9 +509,8 @@
 
       // ...
     }
-
   </script>
-
+  <script src="./js/history.js"></script>
 
 </body>
 
